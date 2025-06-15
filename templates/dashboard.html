@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>📊 SQA Daily Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: #f1f1f1;
+            padding: 40px 20px;
+            animation: fadeIn 1s ease-in-out;
+        }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: #00fff2;
+            text-shadow: 0 0 10px #00fff2;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 16px rgba(0, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            animation: slideUp 0.5s ease-in-out;
+        }
+        p, li {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        strong {
+            color: #00ffae;
+        }
+        ul {
+            margin-top: 10px;
+            list-style-type: none;
+        }
+        li {
+            padding: 6px 0;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+        @keyframes fadeIn {
+            from {opacity: 0;}
+            to {opacity: 1;}
+        }
+        @keyframes slideUp {
+            from {transform: translateY(20px); opacity: 0;}
+            to {transform: translateY(0); opacity: 1;}
+        }
+    </style>
+</head>
+<body>
+    <h1>📊 SQA Daily Post Dashboard</h1>
+
+    <div class="card">
+        <p><strong>Total Scheduled Posts Today:</strong> {{ total_posts }}</p>
+        <p><strong>✅ Posted Today:</strong> {{ posted }}</p>
+        <p><strong>🕒 Remaining:</strong> {{ remaining }}</p>
+    </div>
+
+    {% if time_until_next %}
+    <div class="card">
+        <p><strong>🕒 Current Time:</strong> <span id="current-time">{{ current_time }}</span></p>
+
+        <script>
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('current-time').innerText = now.toLocaleString();
+        }, 1000);
+        </script>
+
+        <p><strong>⏰ Next Post In:</strong> <span id="next-post-timer">{{ time_until_next }}</span></p>
+
+        <script>
+        const nextPostTimeStr = "{{ next_post_time }}";
+        const nextPostTime = new Date(nextPostTimeStr);
+
+        function updateTimer() {
+            const now = new Date();
+            let diff = nextPostTime - now;
+
+            if (diff <= 0) {
+                document.getElementById('next-post-timer').innerText = "🚀 Posting now...";
+                clearInterval(timerInterval);
+                return;
+            }
+
+            const hrs = Math.floor(diff / (1000 * 60 * 60));
+            diff -= hrs * 1000 * 60 * 60;
+
+            const mins = Math.floor(diff / (1000 * 60));
+            diff -= mins * 1000 * 60;
+
+            const secs = Math.floor(diff / 1000);
+
+            document.getElementById('next-post-timer').innerText = `${hrs}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        updateTimer();
+        const timerInterval = setInterval(updateTimer, 1000);
+        </script>
+
+        <p><strong>🗓️ Scheduled At:</strong> {{ next_post_time.strftime('%I:%M %p') }}</p>
+    </div>
+    {% else %}
+    <div class="card">
+        <p>✅ All posts for today are completed.</p>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <h3>📝 Recent Posts Today</h3>
+        <ul>
+            {% for post in recent_posts %}
+                <li><strong>{{ post.time.split("T")[1][:5] }}</strong>: {{ post.content[:100] }}...</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
