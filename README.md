@@ -1,4 +1,5 @@
 # AUTO POST ON FACEBOOK WITH AI CONTENT
+## FOR TOKEN [FOR API OR TOKEN](https://github.com/sajimpk/SQA_Auto_Post_onFacebook?tab=readme-ov-file#meta-developer-app-%E0%A6%93-access-token-setup-guide)
 
 This appears to be a web-based dashboard for monitoring and managing an automated posting system. The "SQA" in the name may suggest that this tool is used for Software Quality Assurance testing of an auto-posting feature.
 
